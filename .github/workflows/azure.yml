@@ -1,0 +1,29 @@
+name: Azure-quickstart
+
+jobs:
+  azure-quickstart:
+    name: Deploy on Azure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Terraform CLI
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Checkout rancher/quickstart
+        uses: actions/checkout@v2
+        with:
+          repository: 'rancher/quickstart'
+
+
+      - name: Init
+        run: |
+          cd quickstart/azure
+          terraform init
+          
+      - name: Deploy
+        env:
+          TF_VAR_azure_subscription_id: ${{ secrets.AZ_SUB_ID }}
+          TF_VAR_azure_client_id: ${{ secrets.AZ_CLIENT_ID }}
+          TF_VAR_azure_client_secret: ${{ secrets.AZ_CLIENT_SECRET }}
+          TF_VAR_azure_tenant_id: ${{ secrets.AZ_TENANT_ID }}
+        run: terraform apply -auto-approve
