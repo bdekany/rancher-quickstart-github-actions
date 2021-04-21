@@ -1,5 +1,7 @@
 name: Azure-quickstart
 
+on: workflow_dispatch
+
 jobs:
   azure-quickstart:
     name: Deploy on Azure
@@ -14,10 +16,21 @@ jobs:
         with:
           repository: 'rancher/quickstart'
 
-
       - name: Init
+        env:
+          TF_VAR_azure_rg: ${{ secrets.AZ_RG }}
+          TF_VAR_azure_sto: ${{ secrets.AZ_STO_NAME }}
+          ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
         run: |
           cd quickstart/azure
+          echo """terraform {
+  backend "azurerm" {
+    resource_group_name   = "var.azure_rg"
+    storage_account_name  = "var.azure_sto"
+    container_name        = "tstate"
+    key                   = "terraform.tfstate"
+  }
+}""" > azureblog.tf
           terraform init
           
       - name: Deploy
@@ -26,4 +39,5 @@ jobs:
           TF_VAR_azure_client_id: ${{ secrets.AZ_CLIENT_ID }}
           TF_VAR_azure_client_secret: ${{ secrets.AZ_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZ_TENANT_ID }}
+          ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
         run: terraform apply -auto-approve
