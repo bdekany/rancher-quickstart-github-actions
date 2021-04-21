@@ -15,6 +15,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 'rancher/quickstart'
+          path: "quickstart"
 
       - name: Init
         env:
@@ -22,14 +23,8 @@ jobs:
           TF_VAR_azure_sto: ${{ secrets.AZ_STO_NAME }}
           ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
         run: |
-          cd azure
-          echo 'terraform {' > azureblog.tf
-          echo 'backend "azurerm" {' >> azureblog.tf
-          echo 'resource_group_name   = "var.azure_rg"' >> azureblog.tf
-          echo 'storage_account_name  = "var.azure_sto"' >> azureblog.tf
-          echo 'container_name        = "tstate"' >> azureblog.tf
-          echo 'key                   = "terraform.tfstate"' >> azureblog.tf
-          echo ' } }' >> azureblog.tf
+          cd quickstart/azure
+          cp ../../azureblog.tf .
           terraform init
           
       - name: Deploy
