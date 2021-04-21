@@ -22,7 +22,7 @@ jobs:
           TF_VAR_azure_sto: ${{ secrets.AZ_STO_NAME }}
           ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
         run: |
-          cd quickstart/azure
+          cd azure
           echo 'terraform {' > azureblog.tf
           echo 'backend "azurerm" {' >> azureblog.tf
           echo 'resource_group_name   = "var.azure_rg"' >> azureblog.tf
