@@ -10,7 +10,10 @@ jobs:
     steps:
       - name: Install Terraform CLI
         uses: hashicorp/setup-terraform@v1
-
+        
+      - name: Checkout
+        uses: actions/checkout@v2
+        
       - name: Checkout rancher/quickstart
         uses: actions/checkout@v2
         with:
