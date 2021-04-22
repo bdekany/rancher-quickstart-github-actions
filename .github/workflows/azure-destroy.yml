@@ -1,0 +1,50 @@
+name: Azure-quickstart-destroy
+
+on: workflow_dispatch
+
+jobs:
+  azure-quickstart:
+    name: Destroy on Azure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Terraform CLI
+        uses: hashicorp/setup-terraform@v1
+        
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Checkout rancher/quickstart
+        uses: actions/checkout@v2
+        with:
+          repository: 'rancher/quickstart'
+          path: "quickstart"
+
+      - name: Prepare
+        env:
+          TF_VAR_azure_rg: ${{ secrets.AZ_RG }}
+          TF_VAR_azure_sto: ${{ secrets.AZ_STO_NAME }}
+          ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
+        run: |
+          cd quickstart/azure
+          echo "terraform {"                                > azureblob.tf
+          echo "backend \"azurerm\" {"                        >> azureblob.tf
+          echo "resource_group_name = \"$TF_VAR_azure_rg\""     >> azureblob.tf
+          echo "storage_account_name  = \"$TF_VAR_azure_sto\""  >> azureblob.tf
+          echo "container_name        = \"tfstate\""           >> azureblob.tf
+          echo "key                   = \"terraform.tfstate\"" >> azureblob.tf
+          echo "}"                                          >> azureblob.tf
+          echo "}"                                          >> azureblob.tf
+          
+      - name: Init and Deploy
+        env:
+          TF_VAR_azure_subscription_id: ${{ secrets.AZ_SUB_ID }}
+          TF_VAR_azure_client_id: ${{ secrets.AZ_CLIENT_ID }}
+          TF_VAR_azure_client_secret: ${{ secrets.AZ_CLIENT_SECRET }}
+          TF_VAR_azure_tenant_id: ${{ secrets.AZ_TENANT_ID }}
+          TF_VAR_rancher_server_admin_password: "quickstart123"
+          ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
+        run: |
+          cd quickstart/azure
+          terraform init
+          terraform destroy -auto-approve
