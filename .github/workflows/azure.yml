@@ -32,7 +32,7 @@ jobs:
           echo "resource_group_name = $TF_VAR_azure_rg"     >> azureblob.tf
           echo "storage_account_name  = $TF_VAR_azure_sto"  >> azureblob.tf
           echo "container_name        = 'tstate'"           >> azureblob.tf
-          echo "key                   = 'terraform.tfstate' >> azureblob.tf
+          echo "key                   = 'terraform.tfstate'" >> azureblob.tf
           echo "}"                                          >> azureblob.tf
           echo "}"                                          >> azureblob.tf
           terraform init
