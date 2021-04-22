@@ -44,5 +44,6 @@ jobs:
           TF_VAR_azure_tenant_id: ${{ secrets.AZ_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
         run: |
+          cd quickstart/azure
           terraform init
           terraform apply -auto-approve
