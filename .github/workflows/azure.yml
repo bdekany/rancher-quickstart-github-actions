@@ -20,7 +20,7 @@ jobs:
           repository: 'rancher/quickstart'
           path: "quickstart"
 
-      - name: Init
+      - name: Prepare
         env:
           TF_VAR_azure_rg: ${{ secrets.AZ_RG }}
           TF_VAR_azure_sto: ${{ secrets.AZ_STO_NAME }}
@@ -35,13 +35,14 @@ jobs:
           echo "key                   = \"terraform.tfstate\"" >> azureblob.tf
           echo "}"                                          >> azureblob.tf
           echo "}"                                          >> azureblob.tf
-          terraform init
           
-      - name: Deploy
+      - name: Init and Deploy
         env:
           TF_VAR_azure_subscription_id: ${{ secrets.AZ_SUB_ID }}
           TF_VAR_azure_client_id: ${{ secrets.AZ_CLIENT_ID }}
           TF_VAR_azure_client_secret: ${{ secrets.AZ_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZ_TENANT_ID }}
           ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
-        run: terraform apply -auto-approve
+        run: |
+          terraform init
+          terraform apply -auto-approve
