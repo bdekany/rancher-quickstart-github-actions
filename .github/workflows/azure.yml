@@ -42,6 +42,7 @@ jobs:
           TF_VAR_azure_client_id: ${{ secrets.AZ_CLIENT_ID }}
           TF_VAR_azure_client_secret: ${{ secrets.AZ_CLIENT_SECRET }}
           TF_VAR_azure_tenant_id: ${{ secrets.AZ_TENANT_ID }}
+          TF_VAR_rancher_server_admin_password: "quickstart123"
           ARM_ACCESS_KEY: ${{ secrets.AZ_STO_KEY }}
         run: |
           cd quickstart/azure
